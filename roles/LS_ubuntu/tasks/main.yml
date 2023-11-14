@@ -4,6 +4,7 @@
     name:
       - apache2
       - mysql-server
+      - mariadb-server
       - php
       - libapache2-mod-php
       - php-mysql
