@@ -1,0 +1,88 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: Update and upgrade CentOS server
+    dnf:
+      update_cache: yes
+      name:  "*"
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: Installing installations dependencies
+    apt:
+      name:
+        - wget
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Dpkg fixing in Ubuntu Servers
+    shell: |
+      dpkg --configure -a
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Installing dnf and epel-release
+    yum:
+      name:
+        - epel-release
+        - dnf
+    when: ansible_distribution == "CentOS"
+
+#elastic(ubuntu)
+- name: Install Elastic Stacks in Ubuntu
+  hosts: ubuntu_ser
+  tags: ES_ubuntu
+  become: true
+  roles:
+    - ES_ubuntu
+
+#elastic(Centos)
+- name: Install Elastic Stacks in Centos
+  hosts: centos_ser
+  tags: ES_centos
+  become: true
+  roles:
+    - ES_centos
+
+#nagios
+- name: Install Nagios on CentOS
+  hosts: centos_ser
+  tags: nagios_centos
+  become: true
+  roles:
+    - nagios_centos
+
+#pgi(ubuntu)
+- name: Install of Grafana, Prometheous and influxdb in Ubuntu
+  hosts: ubuntu_ser
+  become: true
+  tags: pgi_ubuntu
+  roles:
+    - role: pgi_ubuntu
+
+#pgi(centos)
+- name: Install of Grafana, Prometheous and influxdb in Centos
+  hosts: centos_ser
+  become: true
+  tags: pgi_centos
+  roles:
+    - role: pgi_centos
+      source: https://github.com/prometheus/prometheus/releases/download/v2.43.0/prometheus-2.43.0.linux-amd64.tar.gz
+
+#lamp(ubuntu)
+- name: Install Lamp Stack in Ubuntu
+  hosts: ubuntu_ser
+  become: true
+  tags: LS_ubuntu
+  roles:
+    - LS_ubuntu
+
+#lamp(centos)
+- name: Install Lamp Stack in Centos
+  hosts: centos_ser
+  become: true
+  tags: LS_centos
+  roles:
+    - LS_centos
+
