@@ -1,5 +1,5 @@
 ---
-- name: Installing depedncies
+- name: Installing lamp stack depedencies
   apt:
     name:
       - apache2
